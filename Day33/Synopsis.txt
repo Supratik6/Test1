@@ -1,0 +1,157 @@
+/*
+ * Title: Java Multithreading Demonstrations
+ * Author: [Your Name]
+ * Description: This file contains examples of various multithreading features in Java,
+ * including Thread class, Runnable interface, priorities, sleep, yield, join, isAlive,
+ * interrupt, isInterrupted, daemon threads, and more.
+ */
+
+/*
+ * ----------------------------------------
+ * THEORY: MULTITHREADING IN JAVA
+ * ----------------------------------------
+ * Multithreading is a core concept in Java that allows concurrent execution of two or more threads.
+ * A thread is a lightweight sub-process, and multithreading improves the performance of applications
+ * by performing multiple operations simultaneously.
+ * 
+ * Key Concepts:
+ * 1. Thread: Smallest unit of processing.
+ * 2. Runnable Interface: Enables implementing threads without extending the Thread class.
+ * 3. Thread Priority: Controls execution order hints using setPriority/getPriority.
+ * 4. sleep(): Pauses a thread temporarily.
+ * 5. yield(): Causes the current thread to pause and give chance to others of equal priority.
+ * 6. join(): Waits for a thread to finish.
+ * 7. isAlive(): Checks if a thread is still active.
+ * 8. Daemon Thread: Runs in the background (e.g., garbage collector).
+ * 9. interrupt(): Requests a thread to stop.
+ * 10. isInterrupted(): Checks if a thread has been interrupted.
+ */
+
+// 1. Thread class with getId and getName
+class BasicThreadExample extends Thread {
+    public void run() {
+        System.out.println("Thread is running...");
+    }
+
+    public static void main(String[] args) {
+        BasicThreadExample t1 = new BasicThreadExample();
+        t1.start();
+        BasicThreadExample t2 = new BasicThreadExample();
+        t2.start();
+
+        System.out.println("id : " + t1.getId());
+        System.out.println("id : " + t2.getId());
+        System.out.println("name: " + t1.getName());
+        System.out.println("name: " + t2.getName());
+    }
+}
+
+// 2. Priority example with setPriority and getPriority
+class PriorityExample extends Thread {
+    public void run() {
+        System.out.println(Thread.currentThread().getName() + " is running with priority " + Thread.currentThread().getPriority());
+    }
+
+    public static void main(String[] args) {
+        PriorityExample t1 = new PriorityExample();
+        PriorityExample t2 = new PriorityExample();
+
+        t1.setName("HighPriorityThread");
+        t2.setName("LowPriorityThread");
+
+        t1.setPriority(Thread.MAX_PRIORITY);
+        t2.setPriority(Thread.MIN_PRIORITY);
+
+        t1.start();
+        t2.start();
+    }
+}
+
+// 3. Yield and isAlive demonstration
+class YieldDemo extends Thread {
+    public YieldDemo(String name) {
+        super(name);
+    }
+
+    public void run() {
+        for (int i = 1; i <= 5; i++) {
+            System.out.println(getName() + " - Iteration " + i);
+            Thread.yield();
+        }
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        YieldDemo t1 = new YieldDemo("Thread-A");
+        YieldDemo t2 = new YieldDemo("Thread-B");
+
+        t1.start();
+        t2.start();
+
+        System.out.println("Is " + t1.getName() + " alive? " + t1.isAlive());
+        System.out.println("Is " + t2.getName() + " alive? " + t2.isAlive());
+
+        t1.join();
+        t2.join();
+
+        System.out.println("Is " + t1.getName() + " alive after join? " + t1.isAlive());
+        System.out.println("Is " + t2.getName() + " alive after join? " + t2.isAlive());
+        System.out.println("Main thread finished.");
+    }
+}
+
+// 4. Runnable example
+class MyRunnable implements Runnable {
+    public void run() {
+        for (int i = 1; i <= 5; i++) {
+            System.out.println(Thread.currentThread().getName() + " - Count: " + i);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                System.out.println(Thread.currentThread().getName() + " was interrupted!");
+            }
+        }
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        MyRunnable task = new MyRunnable();
+        Thread t1 = new Thread(task, "Thread-A");
+        Thread t2 = new Thread(task, "Thread-B");
+
+        t1.start();
+        t2.start();
+
+        t1.join();
+        t2.join();
+
+        System.out.println("Main thread exiting.");
+    }
+}
+
+// 5. Interrupt, isInterrupted, daemon, and isAlive demo
+class DaemonInterruptDemo extends Thread {
+    public void run() {
+        while (!isInterrupted()) {
+            System.out.println(getName() + " is running...");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                System.out.println(getName() + " was interrupted during sleep.");
+                break;
+            }
+        }
+        System.out.println(getName() + " has exited.");
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        DaemonInterruptDemo t1 = new DaemonInterruptDemo();
+        t1.setName("Worker-Thread");
+        t1.setDaemon(true);  // Marking as daemon
+        t1.start();
+
+        Thread.sleep(3000); // Let the thread run a bit
+        t1.interrupt();     // Request interruption
+
+        System.out.println("Is " + t1.getName() + " a daemon? " + t1.isDaemon());
+        System.out.println("Is " + t1.getName() + " alive? " + t1.isAlive());
+    }
+}
