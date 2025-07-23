@@ -1,0 +1,47 @@
+Yes — if you added a file (like a `.txt` or `.java`) inside `Day33`, you'd typically follow **these 4–5 Git commands** to push your changes:
+
+---
+
+### ✅ Minimal Command Set (Once you’ve added the file):
+
+```bash
+git add Day33                         # Stage the Day33 folder and its contents
+git status                            # (Optional) Check what’s being staged
+git commit -m "Added Day33 tasks"     # Commit with a message
+git push                              # Push changes to GitHub
+```
+
+---
+
+### ✅ Full Working Example (from scratch):
+
+If you just created a file like this:
+
+```bash
+echo "Day 33 practice" > Day33/note.txt
+```
+
+Then you'd do:
+
+```bash
+git add Day33
+git status                            # Optional, but helpful
+git commit -m "Added Day33 tasks"
+git push
+```
+
+---
+
+### 💡 Optional: To confirm push success
+
+You can run:
+
+```bash
+git log --oneline
+```
+
+To see your last commit on the local repo.
+
+And visit your GitHub repo online to confirm the folder `Day33` is now visible.
+
+Let me know if you want a one-liner version for future use.
